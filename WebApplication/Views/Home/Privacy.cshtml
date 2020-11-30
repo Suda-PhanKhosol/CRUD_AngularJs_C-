@@ -1,0 +1,35 @@
+﻿@model WebApplication.Models.DepartmentModel
+@{
+    ViewData["Title"] = "Privacy Policy";
+    var h = "Test Javasript at Privacy :" + " ";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Use this page to detail your site's privacy policy.</p>
+
+
+
+
+<div ng-controller="HomeController">
+    <p>
+        Department Name: @Model.Name (@Model.Total)<br />
+        Total Age: @Model.SumAge
+        @foreach (var emp in Model.Employees)
+        {
+            <hr />
+            <h>@h {{text}}</h>
+            <hr/>
+            <div>
+                En: @emp.En<br />
+                Name: @emp.Name<br />
+                Department: @emp.Department<br />
+                Age: @emp.Age
+            </div>
+        }
+    </p>
+</div>
+
+@section Scripts{
+
+    <script src="~/js/apps/HomeController.js"></script>
+}

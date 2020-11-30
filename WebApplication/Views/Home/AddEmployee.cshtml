@@ -1,0 +1,190 @@
+﻿@model WebApplication.Models.EmployeeModel;
+@{
+    ViewData["Title"] = "Add Employee";
+}
+
+<div ng-controller="HomeController" ng-init="Init();">
+    <section class="content-header">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-sm-10">
+                    <h1>
+                        <b> Add Employee </b>
+                    </h1>
+                </div>
+
+                <div class="col-sm-2 text-right">
+
+                    <button type="button" ng-show="mode == 'edit'" class="btn btn-success btn-md" ng-click="UpdateEmployee()" data-backdrop="static" data-keyboard="false">Save</button>
+                    <button type="button" ng-show="mode == 'edit'" class="btn btn-info btn-md" ng-click="GetEmployee()" data-backdrop="static" data-keyboard="false">Cancel</button>
+
+                    <button type="button" ng-show="mode != 'edit'" class="btn btn-info btn-md" ng-click="mode = 'edit'" data-backdrop="static" data-keyboard="false">Edit</button>
+                    <button type="button" ng-show="mode != 'edit' " class="btn btn-success btn-md" ng-click="showEmpInsert()" data-backdrop="static" data-keyboard="false">Add</button>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!--Modal Insert -->
+    <div class="modal fade" id="modal-xl">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="fas fa-user-plus"></i>
+                        Add Employee
+                    </h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label><b>Department</b></label>
+                        <select class="form-control" ng-model="emp.DepartmentId" ng-options="item.id as item.name for item in model.Departments"></select>
+                    </div>
+                    <div class="form-group">
+                        <label><b>EN.</b></label>
+                        <input class="form-control" type="text" ng-model="emp.En" />
+                    </div>
+                    <div class="form-group">
+                        <label><b>Name</b></label>
+                        <input class="form-control" ng-model="emp.Name" />
+                    </div>
+                    <div class="form-group">
+                        <label><b>Age</b></label>
+                        <input class="form-control" type="number" ng-model="emp.Age" />
+                    </div>
+                    <div class="form-group">
+                        <label><b>Salary</b></label>
+                        <input class="form-control" type="number" ng-model="emp.Salary" />
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <pre>{{emp | json}}</pre>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Close</button>
+                    <button class="btn btn-success btn-md" ng-click="InsertEmployee(emp);">Add</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+
+    <!--Modal Update -->
+    <div class="modal fade" id="modal-up">
+        <div class="modal-dialog modal-md">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">
+                        <i class="fas fa-user-plus"></i>
+                        Edit Employee
+                    </h4>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label><b>Salary</b></label>
+                        <input class="form-control" type="number" ng-model="emp.Salary" />
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button class="btn btn-default" type="button" data-dismiss="modal">Cancle</button>
+                    <button class="btn btn-success btn-md" ng-click="InsertEmployee(emp);">Save</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+    </div>
+
+    <!--Table-->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12">
+                    <div class="card">
+
+                        <div class="card-header text-right ">
+                            <input type="text" ng-model="search" />
+                        </div>
+                        <div class="card-header row">
+                            <!-- /.card-header -->
+                            <div class="card-body">
+                                <table  class="table table-bordered">
+                                    <thead class="table-dark">
+                                        <tr class="text-center">
+                                            <th style="width:5%;">No.</th>
+                                            <th style="width:20%;">Department</th>
+                                            <th style="width:10%;">EN.</th>
+                                            <th style="width:20%;">Name</th>
+                                            <th style="width:50px;">Age</th>
+                                            <th style="width:50px;">Salary</th>
+                                            <th style="width:10%;" >Alive</th>h>
+                                            <th style="width:50px;" ng-show="mode =='edit'">Action</th>h>
+
+                                        </tr>
+                                    </thead>
+
+                                    <tbody>
+                                        @*--------------Show Table --------------------*@
+                                        <tr ng-show="mode !='edit'" ng-repeat="item in model.Items | filter: search | orderBy : 'department.name' ">
+                                            <td>{{$index+1}}</td>
+                                            <td>{{item.department.name}}</td>
+                                            <td>{{item.en}}</td>
+                                            <td>{{item.name}}</td>
+                                            <td>{{item.age}}</td>
+                                            <td>{{item.salary|number}}</td>
+                                            <td>
+                                                <select disabled class="form-control"
+                                                        ng-model="item.alive"
+                                                        ng-options="item.Value as item.Text for item in alives">
+                                                </select>
+                                            </td>
+
+                                        </tr>
+                                        @*--------------Can Edit Table --------------------*@
+                                    <tr ng-show="mode=='edit'" ng-repeat="item in model.Items | filter: search | orderBy : 'department.name' ">
+                                        <td>{{$index+1}}</td>
+                                        <td>
+                                            <select class="form-control" ng-model="item.departmentId" ng-options="item.id as item.name for item in departments"></select>
+                                        </td>
+                                        <td>
+                                            <input class="form-control" ng-model="item.en" type="text" disabled />
+                                        </td>
+                                        <td>
+                                            <input class="form-control" ng-model="item.name" type="text" />
+                                        </td>
+                                        <td>
+                                            <input class="form-control" ng-model="item.age" type="number" />
+                                        </td>
+                                        <td>
+                                            <input class="form-control" ng-model="item.salary" type="number" />
+                                        </td>
+                                        <td>
+                                            <select class="form-control" ng-model="item.alive" ng-options="item.Value as item.Text for item in alives"></select>
+                                        </td>
+                                        <td>
+                                            <button class="btn btn-danger btn-sm" ng-click="DeleteEmployee(item)">Delete</button>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+
+                                @*<div class="modal-"><pre>{{model.Items | json}}</pre></div>*@
+                                <div class="modal-"><pre>{{item | json}}</pre></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+
+
+
+@section Scripts{
+    <script src="~/js/apps/HomeController.js"></script>
+}
